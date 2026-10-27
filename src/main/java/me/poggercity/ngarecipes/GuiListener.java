@@ -65,7 +65,7 @@ public final class GuiListener implements Listener {
     private void listClick(Player p, RecipeHolder h, int slot) {
         if (slot == Gui.LIST_CLOSE) {
             gui.click(p);
-            Bukkit.getScheduler().runTask(plugin, p::closeInventory);
+            Bukkit.getScheduler().runTask(plugin, () -> p.closeInventory());
         } else if (slot == Gui.LIST_PREV && h.page > 1) {
             gui.click(p);
             gui.openList(p, h.page - 1);
@@ -107,11 +107,11 @@ public final class GuiListener implements Listener {
             store.remove(h.recipeId);
             Text.send(p, "&a✔ Recipe #" + h.recipeId + " deleted.");
             gui.anvil(p);
-            Bukkit.getScheduler().runTask(plugin, p::closeInventory);
+            Bukkit.getScheduler().runTask(plugin, () -> p.closeInventory());
         } else if (slot == Gui.DEL_CANCEL) {
             Text.send(p, "&7Deletion cancelled.");
             gui.click(p);
-            Bukkit.getScheduler().runTask(plugin, p::closeInventory);
+            Bukkit.getScheduler().runTask(plugin, () -> p.closeInventory());
         }
     }
 
@@ -154,7 +154,7 @@ public final class GuiListener implements Listener {
         } else if (raw == Gui.EDIT_CANCEL) {
             e.setCancelled(true);
             Text.send(p, "&7Recipe creation cancelled. Your items were returned.");
-            Bukkit.getScheduler().runTask(plugin, p::closeInventory);
+            Bukkit.getScheduler().runTask(plugin, () -> p.closeInventory());
         } else if (!Gui.isEditable(raw)) {
             e.setCancelled(true); // border glass, info paper
         }

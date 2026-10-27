@@ -345,7 +345,7 @@ public final class Gui {
         sound(p, Sound.ENTITY_PLAYER_LEVELUP);
 
         holder.finished = true;
-        Bukkit.getScheduler().runTask(plugin, p::closeInventory);
+        Bukkit.getScheduler().runTask(plugin, () -> p.closeInventory());
     }
 
     /**

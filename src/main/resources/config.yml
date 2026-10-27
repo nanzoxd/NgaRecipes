@@ -1,0 +1,13 @@
+# NgaRecipes configuration
+
+# true  = recipes are also registered as real shaped crafting recipes
+#         (craftable in a crafting table, exact item match incl. names/NBT).
+# false = recipes are display-only, like a pure showcase.
+register-crafting-recipes: true
+
+# GUI titles, in MiniMessage format (https://docs.advntr.dev/minimessage/)
+titles:
+  recipes: "<gradient:#e8c670:#fff0cc:#e8c670>ʀᴇʟɪǫᴜᴇꜱᴍᴘ ʀᴇᴄɪᴘᴇꜱ 🔍</gradient>"
+  viewer:  "<gradient:#e8c670:#fff0cc:#e8c670>ʀᴇᴄɪᴘᴇ ᴠɪᴇᴡᴇʀ</gradient>"
+  editor:  "<gradient:#e8c670:#fff0cc:#e8c670>ᴄᴜꜱᴛᴏᴍ ʀᴇᴄɪᴘᴇ ᴇᴅɪᴛᴏʀ</gradient>"
+  delete:  "<gradient:#e8c670:#fff0cc:#e8c670>ᴅᴇʟᴇᴛᴇ ʀᴇᴄɪᴘᴇ?</gradient>"

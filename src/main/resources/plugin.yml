@@ -1,0 +1,30 @@
+name: NgaRecipes
+version: '${project.version}'
+main: me.poggercity.ngarecipes.NgaRecipes
+api-version: '1.21'
+description: Custom crafting recipes with a /recipes showcase GUI.
+commands:
+  recipes:
+    description: Browse all custom recipes.
+    usage: /recipes [reload]
+    aliases: [recipe, ngarecipes]
+    permission: recipes.use
+  addrecipe:
+    description: Create a new custom recipe.
+    usage: /addrecipe
+    permission: recipes.admin
+  editrecipe:
+    description: Edit an existing custom recipe.
+    usage: /editrecipe <id|item>  e.g. /editrecipe apple
+    permission: recipes.admin
+  delrecipe:
+    description: Delete a custom recipe.
+    usage: /delrecipe <id|item>  e.g. /delrecipe apple
+    permission: recipes.admin
+permissions:
+  recipes.use:
+    description: Browse the recipe showcase.
+    default: true
+  recipes.admin:
+    description: Add, edit, delete and reload recipes.
+    default: op

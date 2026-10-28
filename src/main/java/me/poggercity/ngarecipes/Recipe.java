@@ -8,6 +8,8 @@ public final class Recipe {
     String name;
     ItemStack[] ingredients = new ItemStack[9];
     ItemStack output;
+    /** true = also a real crafting recipe; false = showcase only (display-only). */
+    boolean working = true;
 
     Recipe(int id) {
         this.id = id;

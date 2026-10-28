@@ -151,6 +151,9 @@ public final class GuiListener implements Listener {
         if (raw == Gui.EDIT_SAVE) {
             e.setCancelled(true);
             gui.saveEditor(p, h);
+        } else if (raw == Gui.EDIT_TOGGLE) {
+            e.setCancelled(true);
+            gui.toggleWorking(p, h);
         } else if (raw == Gui.EDIT_CANCEL) {
             e.setCancelled(true);
             Text.send(p, "&7Recipe creation cancelled. Your items were returned.");

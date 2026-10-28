@@ -22,7 +22,8 @@ import java.util.UUID;
  *
  * Main list   (54): slots 0-44 recipe icons, 45 prev page, 49 close, 53 next page, rest white glass.
  * Viewer      (45): black glass border, 3x3 grid, output at 16, 36 prev / 40 back / 44 next.
- * Editor      (45): white glass border, 3x3 grid + output are free slots, 38 info, 40 save, 42 cancel.
+ * Editor      (45): white glass border, 3x3 grid + output are free slots, 31 working/showcase toggle,
+ *                    38 info, 40 save, 42 cancel.
  * Delete      (27): 11 confirm, 13 preview, 15 cancel.
  */
 public final class Gui {
@@ -31,6 +32,7 @@ public final class Gui {
     static final int[] GRID = {1, 2, 3, 10, 11, 12, 19, 20, 21};
     static final int OUT = 16;
 
+    static final int EDIT_TOGGLE = 31;
     static final int EDIT_INFO = 38, EDIT_SAVE = 40, EDIT_CANCEL = 42;
     static final int VIEW_PREV = 36, VIEW_BACK = 40, VIEW_NEXT = 44;
     static final int LIST_PREV = 45, LIST_CLOSE = 49, LIST_NEXT = 53;
@@ -209,6 +211,7 @@ public final class Gui {
             lore.add(Text.legacy("&8"));
             lore.add(Text.legacy("&fResult: &e" + amount + "x &f").append(name));
             lore.add(Text.legacy("&fRecipe: &7" + r.name));
+            lore.add(Text.legacy("&fMode: " + (r.working ? "&aWorking" : "&eShowcase only")));
             if (admin) lore.add(Text.legacy("&fID: &7#" + id));
             lore.add(Text.legacy("&8"));
             lore.add(Text.legacy("&eLeft Click &7» View Recipe"));
@@ -246,6 +249,7 @@ public final class Gui {
             lore.add(Text.legacy("&8"));
             lore.add(Text.legacy("&fAmount: &e" + amount));
             lore.add(Text.legacy("&fItem: &7").append(name));
+            lore.add(Text.legacy("&fMode: " + (r.working ? "&aWorking &7(craftable)" : "&eShowcase only")));
             meta.lore(lore);
         });
         inv.setItem(OUT, display);
@@ -274,6 +278,7 @@ public final class Gui {
         RecipeHolder holder = new RecipeHolder(RecipeHolder.Type.EDITOR);
         holder.editMode = existing != null;
         holder.recipeId = existing != null ? existing.id : -1;
+        holder.working = existing == null || existing.working;
         Inventory inv = create(holder, 45, "editor");
         fill(inv, Material.WHITE_STAINED_GLASS_PANE);
 
@@ -286,6 +291,7 @@ public final class Gui {
                 "&7Click SAVE when you're done",
                 "&8",
                 existing != null ? "&7Editing recipe &f#" + existing.id : "&7Creating a new recipe"));
+        inv.setItem(EDIT_TOGGLE, toggleItem(holder.working));
         inv.setItem(EDIT_SAVE, item(Material.LIME_DYE, "&a&l✔ SAVE RECIPE", "&7Click to save this recipe"));
         inv.setItem(EDIT_CANCEL, item(Material.RED_DYE, "&c&l✖ Cancel", "&7Discard changes and close"));
 
@@ -298,6 +304,34 @@ public final class Gui {
 
         show(p, inv, holder);
         sound(p, Sound.BLOCK_CHEST_OPEN);
+    }
+
+    private ItemStack toggleItem(boolean working) {
+        boolean global = plugin.getConfig().getBoolean("register-crafting-recipes", true);
+        List<String> lore = new ArrayList<>();
+        if (working) {
+            lore.add("&7Players can craft this in a crafting table.");
+        } else {
+            lore.add("&7Only shown in /recipes, not craftable.");
+        }
+        lore.add("&8");
+        lore.add("&eClick &7» switch to " + (working ? "&eShowcase only" : "&aWorking"));
+        if (!global) {
+            lore.add("&8");
+            lore.add("&c(register-crafting-recipes is off in config.yml,");
+            lore.add("&cso nothing is craftable right now)");
+        }
+        return working
+                ? item(Material.CRAFTING_TABLE, "&a&lMode: WORKING", lore.toArray(new String[0]))
+                : item(Material.ITEM_FRAME, "&e&lMode: SHOWCASE ONLY", lore.toArray(new String[0]));
+    }
+
+    /** Flips the editor's Working / Showcase toggle and redraws the button. */
+    void toggleWorking(Player p, RecipeHolder holder) {
+        if (holder.finished) return;
+        holder.working = !holder.working;
+        holder.inventory.setItem(EDIT_TOGGLE, toggleItem(holder.working));
+        click(p);
     }
 
     /** Called when SAVE is clicked. */
@@ -333,15 +367,16 @@ public final class Gui {
                 Text.send(p, "&cThat recipe no longer exists.");
                 return;
             }
-            store.update(r, name, ingredients, output);
+            store.update(r, name, ingredients, output, holder.working);
             id = r.id;
             Text.send(p, "&a✔ Recipe successfully updated!");
         } else {
-            id = store.add(name, ingredients, output).id;
+            id = store.add(name, ingredients, output, holder.working).id;
             Text.send(p, "&a✔ Recipe successfully added!");
         }
         Text.send(p, "&7Recipe ID: &f#" + id);
         Text.send(p, "&7Name: &f" + name);
+        Text.send(p, "&7Mode: " + (holder.working ? "&aWorking &7(craftable)" : "&eShowcase only &7(not craftable)"));
         sound(p, Sound.ENTITY_PLAYER_LEVELUP);
 
         holder.finished = true;

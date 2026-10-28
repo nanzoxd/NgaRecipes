@@ -24,6 +24,8 @@ public final class RecipeHolder implements InventoryHolder {
     final Map<Integer, Integer> slotMap = new HashMap<>();
     /** EDITOR: true when editing an existing recipe. */
     boolean editMode;
+    /** EDITOR: the Working / Showcase toggle state. */
+    boolean working = true;
     /** EDITOR: set once saved so a double click can't save twice. */
     boolean finished;
 

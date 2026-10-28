@@ -83,11 +83,12 @@ public final class RecipeStore {
     // ------------------------------------------------------------------ mutations
 
     /** Adds a new recipe at the end of the showcase and returns it. */
-    Recipe add(String name, ItemStack[] ingredients, ItemStack output) {
+    Recipe add(String name, ItemStack[] ingredients, ItemStack output, boolean working) {
         Recipe r = new Recipe(++nextId);
         r.name = name;
         r.ingredients = ingredients;
         r.output = output;
+        r.working = working;
         recipes.put(r.id, r);
         order.add(r.id);
         register(r);
@@ -95,10 +96,11 @@ public final class RecipeStore {
         return r;
     }
 
-    void update(Recipe r, String name, ItemStack[] ingredients, ItemStack output) {
+    void update(Recipe r, String name, ItemStack[] ingredients, ItemStack output, boolean working) {
         r.name = name;
         r.ingredients = ingredients;
         r.output = output;
+        r.working = working;
         register(r);
         save();
     }
@@ -139,6 +141,7 @@ public final class RecipeStore {
                 Recipe r = new Recipe(id);
                 r.name = rs.getString("name", Text.plainName(out));
                 r.output = out;
+                r.working = rs.getBoolean("working", true);
                 for (int i = 0; i < 9; i++) {
                     r.ingredients[i] = rs.getItemStack("ingredients." + (i + 1));
                 }
@@ -168,6 +171,7 @@ public final class RecipeStore {
             String base = "recipes." + id;
             cfg.set(base + ".name", r.name);
             cfg.set(base + ".output", r.output);
+            cfg.set(base + ".working", r.working);
             for (int i = 0; i < 9; i++) {
                 if (r.ingredients[i] != null) cfg.set(base + ".ingredients." + (i + 1), r.ingredients[i]);
             }
@@ -195,6 +199,7 @@ public final class RecipeStore {
         NamespacedKey key = key(r.id);
         Bukkit.removeRecipe(key);
         if (!plugin.getConfig().getBoolean("register-crafting-recipes", true)) return;
+        if (!r.working) return; // this recipe is showcase only
 
         // trim the 3x3 grid to its bounding box
         int minRow = 3, maxRow = -1, minCol = 3, maxCol = -1;

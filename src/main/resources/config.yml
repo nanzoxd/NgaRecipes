@@ -1,8 +1,9 @@
 # NgaRecipes configuration
 
-# true  = recipes are also registered as real shaped crafting recipes
+# Master switch. Each recipe also has its own Working / Showcase toggle in the editor.
+# true  = recipes set to "Working" are registered as real shaped crafting recipes
 #         (craftable in a crafting table, exact item match incl. names/NBT).
-# false = recipes are display-only, like a pure showcase.
+# false = nothing is craftable, every recipe is display-only.
 register-crafting-recipes: true
 
 # GUI titles, in MiniMessage format (https://docs.advntr.dev/minimessage/)

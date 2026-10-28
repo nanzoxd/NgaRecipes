@@ -42,6 +42,18 @@ public final class RecipeStore {
         return recipes.get(id);
     }
 
+    /** The recipe behind one of our registered crafting recipes (key recipe_<id>), or null. */
+    Recipe byKey(NamespacedKey k) {
+        if (!k.getNamespace().equals(plugin.getName().toLowerCase(java.util.Locale.ROOT))) return null;
+        String s = k.getKey();
+        if (!s.startsWith("recipe_")) return null;
+        try {
+            return recipes.get(Integer.parseInt(s.substring(7)));
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
     boolean exists(int id) {
         return recipes.containsKey(id);
     }

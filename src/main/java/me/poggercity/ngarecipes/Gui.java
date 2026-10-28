@@ -211,8 +211,6 @@ public final class Gui {
             lore.add(Text.legacy("&8"));
             lore.add(Text.legacy("&fResult: &e" + amount + "x &f").append(name));
             lore.add(Text.legacy("&fRecipe: &7" + r.name));
-            lore.add(Text.legacy("&fMode: " + (r.working ? "&aWorking" : "&eShowcase only")));
-            if (admin) lore.add(Text.legacy("&fID: &7#" + id));
             lore.add(Text.legacy("&8"));
             lore.add(Text.legacy("&eLeft Click &7» View Recipe"));
             meta.lore(lore);

@@ -16,6 +16,7 @@ public final class NgaRecipes extends JavaPlugin {
         gui = new Gui(this, store);
 
         getServer().getPluginManager().registerEvents(new GuiListener(this, gui, store), this);
+        getServer().getPluginManager().registerEvents(new CraftListener(this, store), this);
 
         RecipeCommands commands = new RecipeCommands(this, gui, store);
         for (String name : new String[]{"recipes", "addrecipe", "editrecipe", "delrecipe"}) {
